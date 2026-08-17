@@ -2,14 +2,14 @@ import { formatDateKey, isSameDay, stripTime } from "../utils/date"
 
 const DAY_LABELS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"]
 const MONTH_LABELS = [
-    "Januari", "Februari", "Maret", "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "December"
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
+    "September", "Oktober", "November", "Desember"
 ]
 
 function Calendar({year, month, selectedDate, onSelectedDate, minDate, maxDate, markedDateKeys, today}) {
     const firstDayOfMonth = new Date(year, month, 1)
     const totalDays = new Date(year, month + 1, 0).getDate()
-    const leadingEmpty = firstDayOfMonth.getDate()
+    const leadingEmpty = firstDayOfMonth.getDay()
 
     const cells = []
     for(let i = 0; i < leadingEmpty; i++) cells.push(null)
@@ -24,8 +24,8 @@ function Calendar({year, month, selectedDate, onSelectedDate, minDate, maxDate, 
             <div className="grid grid-cols-7 gap-1 mb-1">
                 {DAY_LABELS.map((label) => (
                     <div 
-                        key={label}
-                        className="text-center text-xs font-medium text-gray-400 py-1"
+                    key={label}
+                    className="text-center text-xs font-medium text-gray-400 py-1"
                     >
                         {label}
                     </div>
@@ -37,7 +37,7 @@ function Calendar({year, month, selectedDate, onSelectedDate, minDate, maxDate, 
                     if(!date) return <div key={`empty${idx}`}/>
 
                     const dateStripped = stripTime(date)
-                    const isDisabled = dateStripped < minDate || dateStripped > maxDate
+                    const isDisabled = (minDate && dateStripped < minDate) || (maxDate && dateStripped > maxDate)
                     const isToday = isSameDay(date, today)
                     const isMarked = markedDateKeys.has(formatDateKey(date))
                     const isSelected = selectedDate && isSameDay(date, selectedDate)
@@ -53,7 +53,7 @@ function Calendar({year, month, selectedDate, onSelectedDate, minDate, maxDate, 
                                 justify-center transition ${isDisabled ? "text-gray-300 cursor-not-allowed" :
                                 "text-gray-700 hover:bg-indigo-50 cursor-pointer"}
                                 ${isSelected ? "bg-indigo-600 text-white hover:bg-indigo-600" : ""}
-                                ${isToday && !isSelected ? "ring-1 ringindigo-400" : ""}
+                                ${isToday && !isSelected ? "ring-1 ring-indigo-400" : ""}
                                 `}
                         >
                                 {date.getDate()}

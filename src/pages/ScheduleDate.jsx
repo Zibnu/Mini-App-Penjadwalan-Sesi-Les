@@ -15,8 +15,7 @@ function ScheduleDate() {
     const [error, setError] = useState(null)
 
     const today = stripTime(new Date())
-    const minDate = addDays(today, 1)
-    const maxDate = addDays(today, 3)
+    const minDate = addDays(today, 4)
 
     const fetchExistingSessions = async () => {
         setLoading(true)
@@ -73,22 +72,19 @@ function ScheduleDate() {
                         selectedDate={selectedDate}
                         onSelectedDate={setSelectedDate}
                         minDate={minDate}
-                        maxDate={maxDate}
                         markedDateKeys={markedDateKeys}
                         today={today}
                         />
                     </div>
 
-                    <div className="flex gap-4 mt-4 text-xs text-gray-500">
-                        <div className="flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-indigo-500">
-                                Sudah ada jadwal
-                            </span>
+                    <div className="flex flex-wrap items-center gap-6 mt-4 text-xs text-gray-500">
+                        <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block shrink-0" />
+                            <span>Sudah ada jadwal</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            <span className="w-3 h-3 rounded ring-1 ring-indigo-400 inline-block">
-                                Hari ini
-                            </span>
+                        <div className="flex items-center gap-2">
+                            <span className="w-3.5 h-3.5 rounded ring-1 ring-indigo-400 inline-block shrink-0" />
+                            <span>Hari ini</span>
                         </div>
                     </div>
 
