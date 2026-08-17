@@ -52,7 +52,6 @@ Aplikasi web *mobile-first* yang dirancang sebagai *internal administrative tool
 
 ## 🧠 Keputusan Produk & Arsitektur
 
-*(Hal yang tidak dijelaskan di brief, namun penting untuk dipahami oleh developer lain)*
 
 ### 1. Aktor & Batasan Sistem (Internal Admin Tool)
 
