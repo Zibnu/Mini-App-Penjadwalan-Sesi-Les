@@ -25,6 +25,4 @@ dist-ssr
 
 
 .env
-.env.example
-schema.sql
 package-lock.json
