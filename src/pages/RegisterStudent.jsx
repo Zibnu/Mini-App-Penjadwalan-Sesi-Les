@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { FaArrowLeft } from 'react-icons/fa6'
+import { FaArrowLeft } from "react-icons/fa6"
 import { supabase } from "../lib/supabase"
 
 const SESSION_PACKAGE_OPTIONS = [4, 8, 12]
@@ -22,12 +22,12 @@ function RegisterStudent() {
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState(null)
 
-    const isFormValid = form.student_name.trim() !== "" &&
+    const isFormValid =
+        form.student_name.trim() !== "" &&
         form.program.trim() !== "" &&
         form.session_package !== null &&
         form.session_duration !== null &&
         form.mode !== null
-
 
     const handleTextChange = (field) => (e) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }))
@@ -44,16 +44,20 @@ function RegisterStudent() {
         setSubmitting(true)
         setError(null)
 
-        const { data, error } = await supabase.from("enrollments").insert({
-            student_name: form.student_name.trim(),
-            program: form.program.trim(),
-            session_package: form.session_package,
-            session_duration: form.session_duration,
-            mode: form.mode,
-        }).select("id_student").single()
+        const { data, error } = await supabase
+            .from("enrollments")
+            .insert({
+                student_name: form.student_name.trim(),
+                program: form.program.trim(),
+                session_package: form.session_package,
+                session_duration: form.session_duration,
+                mode: form.mode,
+            })
+            .select("id_student")
+            .single()
 
         if (error) {
-            setError("Gagal menyimpan data siswa. coba lagi")
+            setError("Gagal menyimpan data siswa. Silakan coba lagi.")
             console.error(error)
             setSubmitting(false)
             return
@@ -63,127 +67,149 @@ function RegisterStudent() {
     }
 
     return (
-        <div className="max-w-xl mx-auto px-4 py-8">
+        <div className="max-w-xl mx-auto px-4 py-6 sm:py-8">
             <Link
                 to="/"
-                className="
-                inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700
-                mb-6
-                "
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#242829]/70 hover:text-[#026C7A] transition mb-6"
             >
                 <FaArrowLeft size={12} />
-                Kembali
+                <span>Kembali ke Daftar Siswa</span>
             </Link>
 
-
-            <h1 className="text-xl font-bold text-gray-900 mb-1">Register Student</h1>
-            <p className="text-sm text-gray-500 mb-6">Isi data hasil diskusi dengan orang tua siswa.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#242829] mb-1">
+                Registrasi Siswa
+            </h1>
+            <p className="text-xs sm:text-sm text-[#242829]/70 mb-6">
+                Isi data pendaftaran hasil diskusi dengan orang tua siswa.
+            </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                {/* Nama Siswa */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nama Siswa</label>
+                    <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-1.5">
+                        Nama Siswa
+                    </label>
                     <input
                         type="text"
                         value={form.student_name}
                         onChange={handleTextChange("student_name")}
                         placeholder="Contoh: Jun Night Sky"
                         className="
-                        w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                        focus:outline-none focus:ring-2 focus:ring-indigo-500
+                            w-full bg-white border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-[#242829]
+                            placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#026C7A] focus:border-[#026C7A] transition
                         "
                     />
                 </div>
 
+                {/* Program / Level Sekolah */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Program / Level Sekolah</label>
+                    <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-1.5">
+                        Program / Level Sekolah
+                    </label>
                     <input
                         type="text"
                         value={form.program}
                         onChange={handleTextChange("program")}
-                        placeholder="Contoh: SMP"
+                        placeholder="Contoh: SMP Kelas 8"
                         className="
-                        w-full border border-gray-300 rounded-lg px-3 py-2 text-sm 
-                        focus:outline-none focus:ring-2 focus:ring-indigo-500
+                            w-full bg-white border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-[#242829]
+                            placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#026C7A] focus:border-[#026C7A] transition
                         "
                     />
                 </div>
 
+                {/* Jumlah Sesi Paket */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Jumlah Sesi Paket</label>
-                    <div className="flex gap-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-2">
+                        Jumlah Sesi Paket
+                    </label>
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                         {SESSION_PACKAGE_OPTIONS.map((option) => (
                             <button
                                 type="button"
                                 key={option}
                                 onClick={handleOptionSelect("session_package", option)}
                                 className={`
-                                    flex-1 py-2 rounded-lg text-sm font-medium border
-                                    transition ${form.session_package === option ?
-                                        "bg-indigo-600 text-white border-indigo-600" :
-                                        "bg-white text-gray-600 border-gray-300 hover:border-indigo-300"
+                                    py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold border transition cursor-pointer
+                                    ${form.session_package === option
+                                        ? "bg-[#026C7A] text-white border-[#026C7A] shadow-sm"
+                                        : "bg-white text-[#242829] border-gray-300 hover:border-[#026C7A] hover:bg-[#026C7A]/5"
                                     }
-                                    `}>
+                                `}
+                            >
                                 {option} Sesi
                             </button>
                         ))}
                     </div>
                 </div>
 
+                {/* Durasi Per Sesi */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Durasi Per Sesi</label>
-                    <div className="flex gap-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-2">
+                        Durasi Per Sesi
+                    </label>
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                         {SESSION_DURATION_OPTIONS.map((option) => (
                             <button
                                 type="button"
                                 key={option}
                                 onClick={handleOptionSelect("session_duration", option)}
                                 className={`
-                                    flex-1 py-2 rounded-lg text-sm font-medium border
-                                    transition ${form.session_duration === option ?
-                                        "bg-indigo-600 text-white border-indigo-600" :
-                                        "bg-white text-gray-600 border-gray-300 hover:border-indigo-300"
+                                    py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold border transition cursor-pointer
+                                    ${form.session_duration === option
+                                        ? "bg-[#026C7A] text-white border-[#026C7A] shadow-sm"
+                                        : "bg-white text-[#242829] border-gray-300 hover:border-[#026C7A] hover:bg-[#026C7A]/5"
                                     }
-                                    `}>
+                                `}
+                            >
                                 {option} Menit
                             </button>
                         ))}
                     </div>
                 </div>
 
+                {/* Mode Pembelajaran */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Mode Pembelajaran</label>
-                    <div className="flex gap-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-2">
+                        Mode Pembelajaran
+                    </label>
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
                         {MODE_OPTIONS.map((option) => (
                             <button
                                 type="button"
                                 key={option.value}
                                 onClick={handleOptionSelect("mode", option.value)}
                                 className={`
-                                    flex-1 py-2 rounded-lg text-sm font-medium border
-                                    transition ${form.mode === option.value ?
-                                        "bg-indigo-600 text-white border-indigo-600" :
-                                        "bg-white text-gray-600 border-gray-300 hover:border-indigo-300"
+                                    py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold border transition cursor-pointer
+                                    ${form.mode === option.value
+                                        ? "bg-[#026C7A] text-white border-[#026C7A] shadow-sm"
+                                        : "bg-white text-[#242829] border-gray-300 hover:border-[#026C7A] hover:bg-[#026C7A]/5"
                                     }
-                                    `}>
+                                `}
+                            >
                                 {option.label}
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {error && (
+                    <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm">
+                        {error}
+                    </div>
+                )}
 
                 <button 
                     type="submit"
                     disabled={!isFormValid || submitting}
                     className="
-                    w-full bg-indigo-600 text-white font-medium py-2.5
-                    rounded-lg cursor-pointer hover:bg-indigo-700 transition disabled:bg-gray-300
-                    disabled:cursor-not-allowed
+                        w-full bg-[#026C7A] text-white font-semibold py-3 px-4 mt-2
+                        rounded-lg shadow-sm hover:bg-[#01545f] active:scale-[0.99] transition
+                        cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed
                     "
                 >
-                        {submitting ? "Menyimpan..." : "Lanjut"}
-                    </button>
+                    {submitting ? "Menyimpan..." : "Lanjut ke Pilih Tanggal"}
+                </button>
             </form>
         </div>
     )

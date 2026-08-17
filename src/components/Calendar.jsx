@@ -6,35 +6,37 @@ const MONTH_LABELS = [
     "September", "Oktober", "November", "Desember"
 ]
 
-function Calendar({year, month, selectedDate, onSelectedDate, minDate, maxDate, markedDateKeys, today}) {
+function Calendar({ year, month, selectedDate, onSelectedDate, minDate, maxDate, markedDateKeys, today }) {
     const firstDayOfMonth = new Date(year, month, 1)
     const totalDays = new Date(year, month + 1, 0).getDate()
     const leadingEmpty = firstDayOfMonth.getDay()
 
     const cells = []
-    for(let i = 0; i < leadingEmpty; i++) cells.push(null)
-    for(let day = 1; day <= totalDays; day++) cells.push(new Date(year, month, day))
+    for (let i = 0; i < leadingEmpty; i++) cells.push(null)
+    for (let day = 1; day <= totalDays; day++) cells.push(new Date(year, month, day))
 
     return (
         <div>
-            <p className="text-center font-semibold text-gray-900 mb-3">
+            <p className="text-center font-bold text-[#242829] text-base mb-4">
                 {MONTH_LABELS[month]} {year}
             </p>
 
-            <div className="grid grid-cols-7 gap-1 mb-1">
-                {DAY_LABELS.map((label) => (
+            <div className="grid grid-cols-7 gap-1 sm:gap-1.5 mb-1.5">
+                {DAY_LABELS.map((label, idx) => (
                     <div 
-                    key={label}
-                    className="text-center text-xs font-medium text-gray-400 py-1"
+                        key={label}
+                        className={`text-center text-xs font-semibold py-1 select-none ${
+                            idx === 0 ? "text-red-500" : "text-[#242829]/60"
+                        }`}
                     >
                         {label}
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
                 {cells.map((date, idx) => {
-                    if(!date) return <div key={`empty${idx}`}/>
+                    if (!date) return <div key={`empty${idx}`} className="aspect-square" />
 
                     const dateStripped = stripTime(date)
                     const isDisabled = (minDate && dateStripped < minDate) || (maxDate && dateStripped > maxDate)
@@ -49,18 +51,29 @@ function Calendar({year, month, selectedDate, onSelectedDate, minDate, maxDate, 
                             disabled={isDisabled}
                             onClick={() => onSelectedDate(date)}
                             className={`
-                                relative aspect-square rounded-lg text-sm flex items-center
-                                justify-center transition ${isDisabled ? "text-gray-300 cursor-not-allowed" :
-                                "text-gray-700 hover:bg-indigo-50 cursor-pointer"}
-                                ${isSelected ? "bg-indigo-600 text-white hover:bg-indigo-600" : ""}
-                                ${isToday && !isSelected ? "ring-1 ring-indigo-400" : ""}
-                                `}
+                                relative aspect-square rounded-xl text-xs sm:text-sm font-medium flex items-center
+                                justify-center transition select-none
+                                ${isDisabled 
+                                    ? "text-gray-300 bg-gray-50/40 cursor-not-allowed" 
+                                    : "text-[#242829] hover:bg-[#026C7A]/10 hover:text-[#026C7A] cursor-pointer active:scale-95"
+                                }
+                                ${isSelected 
+                                    ? "!bg-[#026C7A] !text-white font-bold shadow-sm" 
+                                    : ""
+                                }
+                                ${isToday && !isSelected 
+                                    ? "ring-2 ring-[#026C7A] font-bold text-[#026C7A]" 
+                                    : ""
+                                }
+                            `}
                         >
-                                {date.getDate()}
-                                {isMarked && !isSelected && (
-                                    <span className="absolute bottom-1 w-1 h-1 rounded-full bg-indigo-500" />
-                                )}
-                            </button>
+                            <span>{date.getDate()}</span>
+                            {isMarked && (
+                                <span className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${
+                                    isSelected ? "bg-[#FBC84F]" : "bg-[#026C7A]"
+                                }`} />
+                            )}
+                        </button>
                     )
                 })}
             </div>

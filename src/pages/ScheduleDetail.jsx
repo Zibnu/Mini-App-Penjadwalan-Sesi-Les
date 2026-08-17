@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation, Link } from "react-router-dom"
 import { FaArrowLeft, FaTriangleExclamation, FaClock, FaCalendarDays } from "react-icons/fa6"
 import { supabase } from "../lib/supabase"
 import { calculateEndTime, isTimeOverlap, isBeforeOperationalHours, isExceedingOperationalHours } from "../utils/time"
+import { formatDateIndo } from "../utils/date"
 
 function ScheduleDetail() {
     const { studentId } = useParams()
@@ -131,88 +132,125 @@ function ScheduleDetail() {
     }
 
     return (
-        <div className="max-w-xl mx-auto px-4 py-8">
+        <div className="max-w-xl mx-auto px-4 py-6 sm:py-8">
             <Link
                 to={`/schedule/${studentId}`}
-                className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#242829]/70 hover:text-[#026C7A] transition mb-6"
             >
                 <FaArrowLeft size={12} />
-                Kembali ke Pilih Tanggal
+                <span>Kembali ke Pilih Tanggal</span>
             </Link>
 
-            <h1 className="text-xl font-bold text-gray-900 mb-1">Detail Sesi</h1>
-            <p className="text-sm text-gray-500 mb-6">Tentukan jam mulai, materi, dan lokasi sesi belajar.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#242829] mb-1">
+                Detail Sesi Belajar
+            </h1>
+            <p className="text-xs sm:text-sm text-[#242829]/70 mb-6">
+                Tentukan jam mulai, lokasi, dan materi untuk sesi ini.
+            </p>
 
-            {loading && <p className="text-sm text-gray-400 text-center py-10">Memuat data sesi...</p>}
-            {fetchError && <p className="text-sm text-red-500 text-center py-10">{fetchError}</p>}
+            {loading && (
+                <div className="text-center py-16">
+                    <div className="inline-block w-8 h-8 border-3 border-[#026C7A]/30 border-t-[#026C7A] rounded-full animate-spin mb-3"></div>
+                    <p className="text-sm text-[#242829]/60">Memuat data sesi...</p>
+                </div>
+            )}
+
+            {fetchError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-4 rounded-xl text-center my-6">
+                    <p>{fetchError}</p>
+                    <Link
+                        to={`/schedule/${studentId}`}
+                        className="inline-block mt-3 text-xs bg-red-600 text-white px-3.5 py-1.5 rounded-lg hover:bg-red-700 transition"
+                    >
+                        Pilih Tanggal Ulang
+                    </Link>
+                </div>
+            )}
 
             {!loading && !fetchError && enrollment && (
                 <>
                     {/* Ringkasan Siswa & Tanggal Terpilih */}
-                    <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6 text-sm text-indigo-900">
-                        <div className="flex justify-between items-center mb-2">
+                    <div className="bg-white border border-[#026C7A]/25 rounded-2xl p-4 sm:p-5 mb-6 shadow-sm">
+                        <div className="flex justify-between items-start mb-3 gap-2">
                             <div>
-                                <span className="font-semibold text-base">{enrollment.student_name}</span>
-                                <span className="text-indigo-600 text-xs ml-2">({enrollment.program})</span>
+                                <h2 className="font-bold text-base sm:text-lg text-[#242829]">
+                                    {enrollment.student_name}
+                                </h2>
+                                <span className="text-[#026C7A] text-xs font-semibold">
+                                    {enrollment.program}
+                                </span>
                             </div>
-                            <span className="text-xs bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded font-medium capitalize">
-                                {enrollment.mode}
+                            <span className={`text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${
+                                enrollment.mode === "online"
+                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                    : "bg-[#FBC84F]/25 text-[#7a5300] border border-[#FBC84F]/60"
+                            }`}>
+                                {enrollment.mode === "online" ? "Online" : "Datang ke rumah"}
                             </span>
                         </div>
-                        <div className="flex flex-wrap gap-4 text-xs text-indigo-700">
-                            <div className="flex items-center gap-1.5">
-                                <FaCalendarDays size={12} />
-                                <span>Tanggal: <strong>{selectedDate}</strong></span>
+
+                        <div className="flex flex-wrap gap-2.5 text-xs text-[#242829]/80 pt-2 border-t border-gray-100">
+                            <div className="flex items-center gap-1.5 bg-[#F9FAFD] border border-gray-200/80 px-2.5 py-1 rounded-lg">
+                                <FaCalendarDays size={12} className="text-[#026C7A]" />
+                                <span>Tanggal: <strong className="text-[#242829]">{formatDateIndo(selectedDate, true)}</strong></span>
                             </div>
-                            <div className="flex items-center gap-1.5">
-                                <FaClock size={12} />
-                                <span>Durasi: <strong>{enrollment.session_duration} Menit</strong></span>
+                            <div className="flex items-center gap-1.5 bg-[#F9FAFD] border border-gray-200/80 px-2.5 py-1 rounded-lg">
+                                <FaClock size={12} className="text-[#026C7A]" />
+                                <span>Durasi: <strong className="text-[#242829]">{enrollment.session_duration} Menit</strong></span>
                             </div>
                         </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                         {/* Jam Mulai & Jam Selesai */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-1.5">
                                     Jam Mulai
                                 </label>
                                 <input
                                     type="time"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="
+                                        w-full bg-white border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-[#242829]
+                                        focus:outline-none focus:ring-2 focus:ring-[#026C7A] focus:border-[#026C7A] transition
+                                    "
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Jam Selesai
+                                <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-1.5">
+                                    Jam Selesai (Otomatis)
                                 </label>
                                 <input
                                     type="text"
                                     value={endTime ? `${endTime} WIB` : "-"}
                                     disabled
-                                    className="w-full border border-gray-200 bg-gray-100 rounded-lg px-3 py-2 text-sm text-gray-600 cursor-not-allowed font-medium"
+                                    className="
+                                        w-full border border-gray-200 bg-gray-100/80 rounded-lg px-3.5 py-2.5 text-sm text-[#242829]/70
+                                        cursor-not-allowed font-medium select-none
+                                    "
                                 />
                             </div>
                         </div>
 
                         {/* Warnings (bisa muncul bersamaan) */}
                         {isOperationalWarning && (
-                            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm">
-                                <FaTriangleExclamation size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-[#FBC84F]/20 border border-[#FBC84F]/70 text-[#734e00] text-xs sm:text-sm">
+                                <FaTriangleExclamation size={16} className="text-[#b88619] shrink-0 mt-0.5" />
                                 <div>
-                                    <p className="font-semibold text-xs uppercase tracking-wide">Peringatan Jam Operasional</p>
-                                    <p className="text-xs mt-0.5">
+                                    <p className="font-bold uppercase tracking-wider text-[11px]">
+                                        Peringatan Jam Operasional
+                                    </p>
+                                    <p className="mt-1 leading-relaxed">
                                         {isStartTooEarly && isEndTooLate ? (
-                                            <>Sesi ({startTime} - {endTime}) berada di luar jam operasional bimbingan belajar (<strong>07:00 - 20:00</strong>).</>
+                                            <>Sesi ({startTime} - {endTime}) berada di luar jam operasional bimbingan belajar (<strong>07:00 - 20:00 WIB</strong>).</>
                                         ) : isStartTooEarly ? (
-                                            <>Sesi dimulai pukul <strong>{startTime}</strong>. Jam operasional bimbingan belajar paling awal dimulai pukul <strong>07:00</strong>.</>
+                                            <>Sesi dimulai pukul <strong>{startTime} WIB</strong>. Jam operasional bimbingan belajar paling awal dimulai pukul <strong>07:00 WIB</strong>.</>
                                         ) : (
-                                            <>Sesi berakhir pukul <strong>{endTime}</strong>. Jam operasional bimbingan belajar maksimal berakhir pukul <strong>20:00</strong>.</>
+                                            <>Sesi berakhir pukul <strong>{endTime} WIB</strong>. Jam operasional bimbingan belajar maksimal berakhir pukul <strong>20:00 WIB</strong>.</>
                                         )}
                                     </p>
                                 </div>
@@ -220,12 +258,14 @@ function ScheduleDetail() {
                         )}
 
                         {isOverlapWarning && (
-                            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm">
+                            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm">
                                 <FaTriangleExclamation size={16} className="text-red-500 shrink-0 mt-0.5" />
                                 <div>
-                                    <p className="font-semibold text-xs uppercase tracking-wide">Peringatan Bentrok Jadwal</p>
-                                    <p className="text-xs mt-0.5">
-                                        Jam sesi ({startTime} - {endTime}) bentrok dengan jadwal sesi yang sudah ada pada tanggal ini.
+                                    <p className="font-bold uppercase tracking-wider text-[11px]">
+                                        Peringatan Bentrok Jadwal
+                                    </p>
+                                    <p className="mt-1 leading-relaxed">
+                                        Jam sesi ({startTime} - {endTime} WIB) bentrok dengan jadwal sesi yang sudah ada untuk siswa ini pada tanggal tersebut.
                                     </p>
                                 </div>
                             </div>
@@ -233,7 +273,7 @@ function ScheduleDetail() {
 
                         {/* Input Lokasi */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-1.5">
                                 Lokasi Belajar
                             </label>
                             <input
@@ -242,23 +282,25 @@ function ScheduleDetail() {
                                 onChange={(e) => setLocation(e.target.value)}
                                 disabled={enrollment.mode === "online"}
                                 placeholder={enrollment.mode === "online" ? "Online" : "Contoh: Jl. Kaliurang KM 5, Sleman"}
-                                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                                    enrollment.mode === "online"
-                                        ? "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
-                                        : "border-gray-300 text-gray-900 bg-white"
-                                }`}
+                                className={`
+                                    w-full border rounded-lg px-3.5 py-2.5 text-sm transition focus:outline-none focus:ring-2 focus:ring-[#026C7A] focus:border-[#026C7A]
+                                    ${enrollment.mode === "online"
+                                        ? "bg-gray-100/80 border-gray-200 text-[#242829]/60 cursor-not-allowed select-none"
+                                        : "bg-white border-gray-300 text-[#242829] placeholder:text-gray-400"
+                                    }
+                                `}
                                 required
                             />
                             {enrollment.mode === "online" && (
-                                <p className="text-xs text-gray-400 mt-1">
-                                    Otomatis terisi karena siswa memilih mode online.
+                                <p className="text-xs text-[#242829]/60 mt-1">
+                                    Otomatis terisi karena siswa memilih mode pembelajaran online.
                                 </p>
                             )}
                         </div>
 
                         {/* Input Materi */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-semibold text-[#242829] mb-1.5">
                                 Materi Pembelajaran
                             </label>
                             <input
@@ -266,13 +308,18 @@ function ScheduleDetail() {
                                 value={material}
                                 onChange={(e) => setMaterial(e.target.value)}
                                 placeholder="Contoh: Matematika - Aljabar & Persamaan Linear"
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="
+                                    w-full bg-white border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-[#242829]
+                                    placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#026C7A] focus:border-[#026C7A] transition
+                                "
                                 required
                             />
                         </div>
 
                         {submitError && (
-                            <p className="text-sm text-red-500">{submitError}</p>
+                            <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm">
+                                {submitError}
+                            </div>
                         )}
 
                         {/* Tombol Simpan */}
@@ -280,8 +327,9 @@ function ScheduleDetail() {
                             type="submit"
                             disabled={!isFormValid || submitting}
                             className="
-                                w-full mt-2 bg-indigo-600 text-white font-medium py-2.5 rounded-lg
-                                hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed
+                                w-full mt-2 bg-[#026C7A] text-white font-semibold py-3 px-4 rounded-lg
+                                shadow-sm hover:bg-[#01545f] active:scale-[0.99] transition
+                                cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed
                             "
                         >
                             {submitting ? "Menyimpan Sesi..." : "Simpan Sesi"}
