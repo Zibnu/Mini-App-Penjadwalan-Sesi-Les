@@ -6,9 +6,9 @@ function StudentCard({student}) {
 
     return (
         <button 
-            onClick={() => navigate(`/summary/:${student.id_student}`)}
+            onClick={() => navigate(`/summary/${student.id_student}`)}
             className="w-full flex items-center justify-between 
-            bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-indigo300
+            bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-indigo-300
             hover:shadow-sm transition text-left"
         >
             <div>

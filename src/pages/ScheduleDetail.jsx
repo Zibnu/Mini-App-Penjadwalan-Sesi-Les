@@ -40,7 +40,7 @@ function ScheduleDetail() {
                 // 1. Fetch enrollment data
                 const { data: enrollmentData, error: enrollmentError } = await supabase
                     .from("enrollments")
-                    .select("id_student, student_name, mode, session_duration")
+                    .select("id_student, student_name, program, session_package, session_duration, mode")
                     .eq("id_student", studentId)
                     .single()
 
