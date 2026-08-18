@@ -46,7 +46,26 @@ Aplikasi web *mobile-first* yang dirancang sebagai *internal administrative tool
    npm run dev
    ```
 
-   Buka `http://localhost:5173` pada browser Anda (gunakan Toggle Device Toolbar / Mobile View pada DevTools).
+   Buka `http://localhost:5173` pada browser Anda.
+
+6. **Mendaftarkan siswa baru**
+
+   Pada halaman pertama akan ditampilkan data daftar siswa, jika ingin menambahkan siswa klik tombol Tambah siswa pada halaman ini terdiri dari kolom yang perlu diinputkan berupa :
+- Nama Siswa
+- Program
+- Jumlah Sesi Paket
+- Durasi Per Sesi
+- Metode Pembelajaran
+
+   Apabila semua kolom telah diisi silahkan untuk menekan tombol Lanjut
+
+7. **Memilih Tanggal Sesi**
+
+   Admin harus memilih tanggal pada bulan saat ini dan paling cepat adalah 3 hari dari sekarang, jika admin telah menambahkan sesi maka pada tanggal tersebut akan memiliki tanda bahwa pada tanggal ini terdapat sesi belajar dan tetap bisa dipilih, untuk melihat tanggal sekarang terdapat sebuah border berwarna Teal dan untuk tanggal yang berwarna pudar adalah tanggal yang tidak bisa dipilih.
+
+8. **Memasukkan Detail Sesi Belajar**
+
+   Admin menentukan jam berapa sesi pembelajaran akan dimulai, jika admin mencoba memasukkan jam sebelum atau melewati jam operasional maka akan ada warning dan tidak akan bisa menyimpan data tersebut sehingga admin harus memilih pada jam operasional yaitu 07:00 WIB - 20:00 WIB,jika pada hari tersebut anak yang didaftarkan les memiliki jadwal les di jam tertentu maka jika admin memasukkan angka dari rentang waktu ketika anak tersebut sedang melaksanakan less akan terdapat warning dan tidak bisa menyimpan jam tersebut, Kolom lokasi dapat dimasukan data rumah atau tempat yang akan diadakan les namun jika metode pembelajaran online maka kolom tersebut tidak bisa dirubah, lalu untuk materi pelajaran akan disimpan pada kolom materi pembelajaran dan jika sesi sudah disimpan maka tombol simpan akan aktif dan masuk ke halaman student summarry
 
 ---
 
